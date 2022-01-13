@@ -11,7 +11,6 @@
     "paths": {
       "~/*": ["./*"]
     },
-    // "publicUrl": "/",
     "typeRoots": ["src/images/"],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
