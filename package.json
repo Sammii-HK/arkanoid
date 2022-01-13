@@ -9,6 +9,11 @@
     "start": "parcel serve src/index.html",
     "watch": "parcel watch src/index.html"
   },
+  "targets": {
+    "main": {
+      "publicUrl": "/"
+    }
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
