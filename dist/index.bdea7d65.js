@@ -592,7 +592,7 @@ function startGame(view4) {
 const view = new _canvasView.CanvasView('#game-canvas');
 view.initStartButton(startGame);
 
-},{"./view/CanvasView":"cE3vc","./sprites/Paddle":"dwfDQ","./images/paddle.png":"aAktw","./setup":"hVA4U","./helpers":"bAueM","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","./sprites/Ball":"1Tme8","./images/ball.png":"i6RJO","./Collision":"hIGtx"}],"cE3vc":[function(require,module,exports) {
+},{"./view/CanvasView":"cE3vc","./sprites/Ball":"1Tme8","./sprites/Paddle":"dwfDQ","./Collision":"hIGtx","./images/ball.png":"i6RJO","./images/paddle.png":"aAktw","./setup":"hVA4U","./helpers":"bAueM","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"cE3vc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CanvasView", ()=>CanvasView
@@ -658,7 +658,50 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"dwfDQ":[function(require,module,exports) {
+},{}],"1Tme8":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Ball", ()=>Ball
+);
+class Ball {
+    constructor(speed, ballSize, position, image){
+        this.ballSize = ballSize;
+        this.position = position;
+        this.ballImage = new Image();
+        this.speed = {
+            x: speed,
+            y: -speed
+        }, this.ballSize = ballSize;
+        this.position = position;
+        this.ballImage.src = image;
+    }
+    // Getters
+    get width() {
+        return this.ballSize;
+    }
+    get height() {
+        return this.ballSize;
+    }
+    get pos() {
+        return this.position;
+    }
+    get image() {
+        return this.ballImage;
+    }
+    // Methods
+    changeYDirection() {
+        this.speed.y = -this.speed.y;
+    }
+    changeXDirection() {
+        this.speed.x = -this.speed.x;
+    }
+    moveBall() {
+        this.pos.x += this.speed.x;
+        this.pos.y += this.speed.y;
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"dwfDQ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Paddle", ()=>Paddle
@@ -714,8 +757,41 @@ class Paddle {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"aAktw":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('2VWEd') + "paddle.ddd2175c.png" + "?" + Date.now();
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"hIGtx":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Collision", ()=>Collision
+);
+class Collision {
+    checkBallCollision(ball, paddle, view) {
+        // Check ball collision with paddle
+        if (ball.pos.x + ball.width > paddle.pos.x && ball.pos.x < paddle.pos.x + paddle.width && ball.pos.y + ball.height === paddle.pos.y) ball.changeYDirection();
+        // Check ball collision with walls
+        if (ball.pos.x > view.canvas.width - ball.width || ball.pos.x < 0) ball.changeXDirection();
+        // Ball movement Y constraints
+        if (ball.pos.y < 0) ball.changeYDirection();
+    }
+    isCollidingBrick(ball, brick) {
+        if (ball.pos.x < brick.pos.x + brick.width && ball.pos.x + ball.width > brick.pos.x && ball.pos.y < brick.pos.y + brick.height && ball.pos.y + ball.height > brick.pos.y) return true;
+        return false;
+    }
+    // check ball collision with bricks
+    isCollidingBricks(ball, bricks) {
+        let colliding = false;
+        bricks.forEach((brick, i)=>{
+            if (this.isCollidingBrick(ball, brick)) {
+                ball.changeYDirection();
+                if (brick.energy === 1) bricks.splice(i, 1);
+                else brick.energy -= 1;
+                colliding = true;
+            }
+        });
+        return colliding;
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"i6RJO":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('2VWEd') + "ball.ef665b48.png" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"chiK4"}],"chiK4":[function(require,module,exports) {
 "use strict";
@@ -752,7 +828,10 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"hVA4U":[function(require,module,exports) {
+},{}],"aAktw":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('2VWEd') + "paddle.ddd2175c.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"chiK4"}],"hVA4U":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "STAGE_PADDING", ()=>STAGE_PADDING
@@ -917,7 +996,7 @@ var _brick = require("./sprites/Brick");
 var _setup = require("./setup");
 function createBricks() {
     return _setup.LEVEL.reduce((acc, element, i)=>{
-        const row = Math.floor(i + 1) / _setup.STAGE_COLS;
+        const row = Math.floor((i + 1) / _setup.STAGE_COLS);
         const col = i % _setup.STAGE_COLS;
         const x = _setup.STAGE_PADDING + col * (_setup.BRICK_WIDTH + _setup.BRICK_PADDING);
         const y = _setup.STAGE_PADDING + row * (_setup.BRICK_HEIGHT + _setup.BRICK_PADDING);
@@ -969,85 +1048,6 @@ class Brick {
     // Setters
     set energy(energy) {
         this.brickEnergy = energy;
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"1Tme8":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Ball", ()=>Ball
-);
-class Ball {
-    constructor(speed, ballSize, position, image){
-        this.ballSize = ballSize;
-        this.position = position;
-        this.ballImage = new Image();
-        this.speed = {
-            x: speed,
-            y: -speed
-        }, this.ballSize = ballSize;
-        this.position = position;
-        this.ballImage.src = image;
-    }
-    // Getters
-    get width() {
-        return this.ballSize;
-    }
-    get height() {
-        return this.ballSize;
-    }
-    get pos() {
-        return this.position;
-    }
-    get image() {
-        return this.ballImage;
-    }
-    // Methods
-    changeYDirection() {
-        this.speed.y = -this.speed.y;
-    }
-    changeXDirection() {
-        this.speed.x = -this.speed.x;
-    }
-    moveBall() {
-        this.pos.x += this.speed.x;
-        this.pos.y += this.speed.y;
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"i6RJO":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('2VWEd') + "ball.ef665b48.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"chiK4"}],"hIGtx":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Collision", ()=>Collision
-);
-class Collision {
-    checkBallCollision(ball, paddle, view) {
-        // Check ball collision with paddle
-        if (ball.pos.x + ball.width > paddle.pos.x && ball.pos.x < paddle.pos.x + paddle.width && ball.pos.y + ball.height === paddle.pos.y) ball.changeYDirection();
-        // Check ball collision with walls
-        if (ball.pos.x > view.canvas.width - ball.width || ball.pos.x < 0) ball.changeXDirection();
-        // Ball movement Y constraints
-        if (ball.pos.y < 0) ball.changeYDirection();
-    }
-    isCollidingBrick(ball, brick) {
-        if (ball.pos.x > brick.pos.x + brick.width && ball.pos.x + ball.width > brick.pos.x && ball.pos.y < brick.pos.y + brick.height && ball.pos.y + ball.height > brick.pos.y) return true;
-        return false;
-    }
-    // check ball collision with bricks
-    isCollidingBricks(ball, bricks) {
-        let colliding = false;
-        bricks.forEach((brick, i)=>{
-            if (this.isCollidingBrick(ball, brick)) {
-                ball.changeYDirection();
-                if (brick.energy === 1) bricks.splice(i, 1);
-                else brick.energy -= 1;
-                colliding = true;
-            }
-        });
-        return colliding;
     }
 }
 

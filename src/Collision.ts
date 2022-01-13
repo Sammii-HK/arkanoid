@@ -25,7 +25,7 @@ export class Collision {
 
   isCollidingBrick(ball: Ball, brick: Brick): boolean {
     if (
-      ball.pos.x > brick.pos.x + brick.width &&
+      ball.pos.x < brick.pos.x + brick.width &&
       ball.pos.x + ball.width > brick.pos.x &&
       ball.pos.y < brick.pos.y + brick.height &&
       ball.pos.y + ball.height > brick.pos.y
