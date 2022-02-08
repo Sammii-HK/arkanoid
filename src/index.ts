@@ -7,9 +7,8 @@ import { Paddle } from "./sprites/Paddle";
 import { Collision } from "./Collision";
 
 //  Images
-import BALL_IMAGE from './images/ball.png';
-import BRICK_IMAGE from './images/brick.png';
-import PADDLE_IMAGE from './images/paddle.png';
+import BALL_IMAGE from '/images/ball.png';
+import PADDLE_IMAGE from '/images/paddle.png';
 
 // Level & Colours
 import {
