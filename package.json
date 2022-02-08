@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel serve src/index.html",
     "watch": "parcel watch src/index.html",
-    "gh-build": "parcel build --public-url . src/index.html && git add . && git commit -m 'gh-pages build' && git subtree push --prefix dist origin gh-page"
+    "gh-build": "parcel build --public-url . src/index.html && git add . && git commit -m 'gh-pages build' && git subtree push --prefix dist origin gh-pages"
   },
   "author": "",
   "license": "ISC",
